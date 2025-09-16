@@ -1,0 +1,10 @@
+[theme]
+base = "light"
+primaryColor = "#1A73E8"             # Example accent color
+backgroundColor = "#FFFFFF"          # White background
+secondaryBackgroundColor = "FFFFFF" # Dark blue sidebar background
+textColor = "#202124"                # Dark text
+font = "sans serif"
+
+[server]
+headless = true

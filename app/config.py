@@ -3,7 +3,7 @@ Configuration system for Koteria App.
 
 Centralized configuration management following Streamlit best practices.
 """
-
+import streamlit as st
 from dataclasses import dataclass
 from typing import Dict, Any
 
@@ -24,9 +24,9 @@ class AppConfig:
 
 # App configurations
 APP_CONFIGS = {
-    "koteria": AppConfig(
-        name="koteria",
-        display_name="Koteria",
+    "finance": AppConfig(
+        name="finance",
+        display_name="finance",
         layout="wide",
         page_icon="",
         custom_settings={
@@ -38,16 +38,8 @@ APP_CONFIGS = {
 
 # User to app mapping
 USER_APP_MAPPING = {
-    "Admin": "koteria",
-    "Koteria": "koteria"
+    "Wealthin": "finance"
 }
-
-# Default credentials
-DEFAULT_CREDENTIALS = {
-    "Admin": "Admin",
-    "Koteria": "Koteria"
-}
-
 
 def get_app_config(app_name: str) -> AppConfig:
     """Get configuration for an app."""
@@ -60,5 +52,10 @@ def get_user_app(username: str) -> str:
 
 
 def get_credentials() -> Dict[str, str]:
-    """Get all credentials."""
-    return DEFAULT_CREDENTIALS
+    """Get all credentials from secrets.toml or fallback to defaults."""
+    try:
+        # Try to get credentials from secrets.toml
+        if "login" in st.secrets and "credentials" in st.secrets["login"]:
+            return st.secrets["login"]["credentials"]
+    except Exception as e:
+        st.error(f"Error getting credentials: {e}")

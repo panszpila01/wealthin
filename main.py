@@ -1,7 +1,7 @@
 """
-Koteria - HTML File Processing Application
+finance
 
-Main entry point for the Koteria application with simplified structure.
+Main entry point for the finance application with simplified structure.
 """
 
 import streamlit as st
@@ -10,11 +10,12 @@ from app.config import get_credentials
 from app.utils import initialize_session_state
 from app.pages.dashboard import welcome
 from app.pages.file_converter import convert_file
+from app.pages.database import database
 
 def show_login_page():
     """Display the login page."""
-    st.title("Koteria Login")
-    st.markdown("---")
+    st.title("Application Login")
+    st.markdown("")
     
     with st.form("login_form"):
         st.subheader("Enter your credentials")
@@ -57,29 +58,104 @@ def show_sidebar_navigation():
         margin: 0 !important;
         padding: 0 !important;
     }
+    
+    /* Add vertical light grey line between sidebar and main content */
+    section[data-testid="stSidebar"] {
+        border-right: 1px solid #e0e0e0 !important;
+    }
+    
+    /* Alternative selectors for sidebar border */
+    .css-1d391kg {
+        border-right: 1px solid #e0e0e0 !important;
+    }
+    
+    .css-1cypcdb {
+        border-right: 1px solid #e0e0e0 !important;
+    }
+    
+    /* Remove top spacing from sidebar content - multiple selectors */
+    .css-1lcbmhc {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Remove top spacing from sidebar container */
+    section[data-testid="stSidebar"] > div {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Remove top spacing from first element in sidebar */
+    .css-1lcbmhc > div:first-child {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    /* Force logo to top with larger negative margin */
+    .css-1lcbmhc img {
+        margin-top: -2rem !important;
+        padding-top: 0 !important;
+    }
+    
+    /* Alternative selectors for sidebar content */
+    .css-1d391kg {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    .css-1cypcdb {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Target the sidebar block container */
+    .stSidebar > div > div {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Force first image in sidebar to top with larger negative margin */
+    .stSidebar img {
+        margin-top: -2rem !important;
+        display: block !important;
+    }
+    
+    /* Additional aggressive selectors */
+    section[data-testid="stSidebar"] img {
+        margin-top: -2rem !important;
+        position: relative !important;
+        top: -2rem !important;
+    }
+    
+    /* Target any image in sidebar with multiple selectors */
+    .css-1lcbmhc > div:first-child img,
+    .css-1d391kg > div:first-child img,
+    .css-1cypcdb > div:first-child img {
+        margin-top: -2rem !important;
+        padding-top: 0 !important;
+    }
     </style>
     """, unsafe_allow_html=True)
     
     with st.sidebar:
         # Logo section - 60% of previous size
-        # st.image('assets/images/koteria_logo3.png', width=150)
-    
+        st.image('assets/images/logo.png', width=180)
         
         # Main navigation using option_menu with logout included
         selected = option_menu(
             menu_title=None,
             options=[
-                "Dashboard", "Analytics", "Notifications", "Appearance", 
-                "Database", "Connections", "Timezones", "Documentation",
-                "Authentication", "User management", "Security", "Payments",
-                "Import data", "Export data", "Logout"
+                "Dashboard", "Convert data", "Database", "Logout"
             ],
             icons=[
-                "house", "graph-up", "bell", "palette",
-                "database", "link-45deg", "clock", "book",
-                "shield-lock", "people", "shield-check", "credit-card",
-                "download", "upload", "box-arrow-right"
+                "house", "download", "database", "box-arrow-right"
             ],
+            # options=[
+            #     "Dashboard", "Convert data", "Logout"
+            # ],
+            # icons=[
+            #     "house", "download", "box-arrow-right"
+            # ],
             menu_icon="cast",
             default_index=0,
             orientation="vertical",
@@ -111,8 +187,8 @@ def show_sidebar_navigation():
                     "transform": "translateX(4px)"
                 },
                 "nav-link-selected": {
-                    "background-color": "#007bff",
-                    "color": "#ffffff"
+                    "background-color": "#f8f9fa",
+                    "color": "#2c3e50"
                 }
             }
         )
@@ -125,10 +201,10 @@ def show_sidebar_navigation():
                     del st.session_state[key]
                 st.rerun()
             else:
-                st.session_state.koteria_current_page = selected
+                st.session_state.finance_current_page = selected
 
-def show_koteria_app():
-    """Display the main Koteria application."""
+def show_wealthin_app():
+    """Display the main finance application."""
     # Initialize session state
     initialize_session_state()
     
@@ -136,17 +212,17 @@ def show_koteria_app():
     show_sidebar_navigation()
     
     # Get current page
-    current_page = st.session_state.get('koteria_current_page', 'Dashboard')
+    current_page = st.session_state.get('finance_current_page', 'Dashboard')
     
     # Display the selected page
     if current_page == "Dashboard":
         welcome()
-    elif current_page in ["Import data", "Export data"]:
+    elif current_page in ["Convert data"]:
         # These pages show the file converter
         convert_file()
-    elif current_page in ["Analytics", "Notifications", "Appearance", "Database", "Connections", "Timezones", "Documentation", "Authentication", "User management", "Security", "Payments"]:
-        # These pages show the dashboard for now
-        welcome()
+    elif current_page == "Database":
+        # Show the database page with Airtable integration
+        database()
     else:
         st.error(f"Unknown page: {current_page}")
 
@@ -154,7 +230,7 @@ def main():
     """Main function to run the application."""
     # Configure page
     st.set_page_config(
-        page_title="Koteria",
+        page_title="Finance",
         page_icon="",
         layout="wide",
         initial_sidebar_state="expanded"
@@ -168,7 +244,7 @@ def main():
     
     if st.session_state.authenticated:
         # User is authenticated, show the app
-        show_koteria_app()
+        show_wealthin_app()
     else:
         # User is not authenticated, show login page
         show_login_page()
